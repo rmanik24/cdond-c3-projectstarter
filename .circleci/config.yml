@@ -8,7 +8,7 @@ commands:
   notify_slack_error:
     steps:
       - slack/notify:
-          channel: C0508K5DQBH
+          channel: D050P0859U3
           event: fail
           template: basic_fail_1
 
