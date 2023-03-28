@@ -1,5 +1,21 @@
 version: 2.1
 
+orbs:
+  slack: circleci/slack@4.3.0
+
+commands:
+
+  notify_slack_error:
+    steps:
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
+
+  notify_slack_pass:
+    steps:
+      - slack/notify:
+          event:  pass
+          template: basic_success_1
   
 jobs:
   build-frontend:
@@ -19,6 +35,8 @@ jobs:
       - save_cache:
           paths: [frontend/node_modules]
           key: frontend-build
+      - notify_slack_error
+      - notify_slack_pass
 
   build-backend:
     docker:
@@ -37,6 +55,9 @@ jobs:
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
+      - notify_slack_error
+      - notify_slack_pass
+      
   test-frontend:
     docker:
       - image: circleci/node:13.8.0
