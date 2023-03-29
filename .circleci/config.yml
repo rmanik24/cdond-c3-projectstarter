@@ -5,6 +5,22 @@ orbs:
 
 commands:
 
+  destroy-environment:
+    description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
+    parameters:
+      when_to_run:
+        type: string
+        default: "on_fail"
+    steps:
+      - run:
+          name: Destroy environments
+          when: on_fail
+          command: |
+            echo "Destroying environments ${CIRCLE_WORKFLOW_ID:0:7}"
+            aws s3 rm s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
+            aws cloudformation delete-stack --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}"
+            aws cloudformation delete-stack --stack-name  "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}"
+
   notify_slack_error:
     steps:
       - slack/notify:
@@ -60,7 +76,7 @@ jobs:
 
   test-frontend:
     docker:
-      - image: circleci/node:13.8.0
+      - image: circleci/node:14.18.0
     steps:
       - checkout 
       - restore_cache:
@@ -74,7 +90,7 @@ jobs:
                 
   test-backend:
     docker:
-      - image: circleci/node:13.8.0
+      - image: circleci/node:14.18.0
     steps:
       - checkout
       - restore_cache:
@@ -87,7 +103,7 @@ jobs:
             npm run test     
   scan-frontend:
     docker:
-      - image: circleci/node:13.8.0
+      - image: circleci/node:14.18.0
     steps:
       - checkout
       - restore_cache:
@@ -101,7 +117,7 @@ jobs:
                 
   scan-backend:
     docker:
-      - image: circleci/node:13.8.0
+      - image: circleci/node:14.18.0
     steps:
       - checkout
       - restore_cache:
@@ -112,6 +128,44 @@ jobs:
             cd backend
             npm i
             npm audit fix --audit-level=critical --force 
+  deploy-infrastructure:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout #checkout code from git
+      - run: yum install -y tar #(install dependencies)
+      - run: yum install -y gzip #(install dependencies)
+
+      - run:
+          name: Deploy backend infrastructure
+          command: |
+            aws cloudformation deploy \
+              --template-file .circleci/files/backend.yml \
+              --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}" \
+              --tags project=udapeople-backend
+
+      - run:
+          name: Deploy frontend infrastructure
+          command: |
+            aws cloudformation deploy \
+              --template-file .circleci/files/frontend.yml \
+              --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}" \
+              --tags project=udapeople-frontend
+
+      - run:
+          name: Add backend IP to ansible inventory
+          command: |
+            export BACKEND_IP=$(aws ec2 describe-instances \
+              --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --query 'Reservations[*].Instances[*].PublicIpAddress' \
+              --output text >> .circleci/ansible/inventory.txt)
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - project/.circleci/ansible/inventory.txt
+
 workflows:
   default:
     jobs:
@@ -127,3 +181,5 @@ workflows:
           requires: [build-backend]
       - scan-frontend:
           requires: [build-frontend] 
+      - deploy-infrastructure:
+          requires: [test-frontend, test-backend, scan-frontend, scan-backend]
