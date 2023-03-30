@@ -370,8 +370,8 @@ jobs:
           name: Backend smoke test.
           working_directory: ./backend
           command: |
-            export BACKEND_URL=$(curl --insecure https://kvdb.io/8n8zbAmdLLCvQsXzfZXeBp/url_${CIRCLE_WORKFLOW_ID:0:7})
-            if curl "$BACKEND_URL/api/status" | grep "ok"
+            export BACKEND_URL=$(curl --insecure https://kvdb.io/C8Dt2wUw32EjNq9E5NLJ25/url_${CIRCLE_WORKFLOW_ID:0:7})
+            if curl "${BACKEND_URL}/api/status" | grep "ok"
             then
               return 0
             else
