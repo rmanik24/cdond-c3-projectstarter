@@ -2,7 +2,7 @@ version: 2.1
 
 orbs:
   
-  slack: circleci/slack@4.3.0
+  slack: circleci/slack@4.10.1
 
 commands:
 
@@ -76,7 +76,7 @@ commands:
 jobs:
   build-frontend:
     docker:
-      - image: cimg/node:14.18.0
+      - image: cimg/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -96,7 +96,7 @@ jobs:
 
   build-backend:
     docker:
-      - image: cimg/node:14.18.0
+      - image: cimg/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -115,7 +115,7 @@ jobs:
 
   test-frontend:
     docker:
-      - image: cimg/node:14.18.0
+      - image: cimg/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -129,7 +129,7 @@ jobs:
 
   test-backend:
     docker:
-      - image: cimg/node:14.18.0
+      - image: cimg/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -143,7 +143,7 @@ jobs:
 
   scan-frontend:
     docker:
-      - image: cimg/node:14.18.0
+      - image: cimg/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -158,7 +158,7 @@ jobs:
 
   scan-backend:
     docker:
-      - image: cimg/node:14.18.0
+      - image: cimg/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -237,7 +237,7 @@ jobs:
 
   run-migrations:
     docker:
-      - image: cimg/node:14.18.0
+      - image: cimg/node:13.8.0
     steps:
       - checkout
       - install_awscli
@@ -260,7 +260,7 @@ jobs:
 
   deploy-frontend:
     docker:
-      - image: cimg/node:14.18.0
+      - image: cimg/node:13.8.0
     steps:
       - checkout
       - install_awscli
@@ -344,7 +344,7 @@ jobs:
 
   smoke-test:
     docker:
-      - image: cimg/node:14.18.0
+      - image: cimg/node:13.8.0
     steps:
       - checkout
       - install_awscli
@@ -383,7 +383,7 @@ jobs:
 
   cloudfront-update:
     docker:
-      - image: cimg/node:14.18.0
+      - image: cimg/node:13.8.0
     steps:
       - checkout
       - install_awscli
