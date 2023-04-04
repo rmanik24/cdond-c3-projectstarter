@@ -10,7 +10,6 @@ commands:
     steps:
       - slack/notify:
           event: fail
-          channel: udacialert
           template: basic_fail_1
 
   install_awscli:
