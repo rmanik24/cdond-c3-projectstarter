@@ -1,24 +1,19 @@
 ---
-- name: 'update and upgrade packages.'
+
+- name: "add nodesource nodejs"
   become: true
-  apt:
-    upgrade: true
-    update_cache: true
-    cache_valid_time: 86400
-- name: remove unneeded deps
+  shell: |
+    curl -fsSL https://deb.nodesource.com/setup_13.x | sudo -E bash -
+
+- name: "install nodejs 13"
   become: true
-  apt:
-    autoremove: true
-- name: install dependencies
-  become: true
-  apt:
-    name: ['nodejs', 'npm']
+  apt: 
+    name: ["nodejs"]
     state: latest
-    update_cache: true
-- name: install pm2
-  become: true
-  npm:
+    update_cache: yes
+
+
+- name: "install PM2 globally"
+  npm: 
     name: pm2
-    global: true
-    state: latest
-    production: true
+    global: yes
