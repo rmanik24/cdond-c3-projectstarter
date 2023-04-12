@@ -209,7 +209,7 @@ jobs:
 
   run-migrations:
     docker:
-      - image: 'circleci/node:14.18.0'
+      - image: 'circleci/node:13.8.0'
     steps:
       - checkout
       - restore_cache:
@@ -229,6 +229,7 @@ jobs:
             echo TYPEORM_USERNAME=$TYPEORM_USERNAME >> "./backend/.env"
             echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> "./backend/.env"
             echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> "./backend/.env"
+            echo ./backend/.env
       - run:
           name: Run migrations
           command: |
