@@ -234,7 +234,12 @@ jobs:
           name: Run migrations
           command: |
             cd backend
+            ls
+            cat .env
             npm install
+            echo "npm installed"
+            printenv
+            echo "show enviromental values"
             npm run migrations > migrations_dump.txt
       - run:
           name: Send migration results to memstash
