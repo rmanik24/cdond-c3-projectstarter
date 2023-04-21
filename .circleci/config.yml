@@ -435,7 +435,7 @@ jobs:
       - run:
           name: "Clean Up"
           command: |
-            export OldWorkflowID=$(head -1 .circleci/ansible/old_workflow_id)
+            export OldWorkflowID=$(head -1 old_workflow_id)
 
             CurrentWorkflowID=${CIRCLE_WORKFLOW_ID:0:7}
 
