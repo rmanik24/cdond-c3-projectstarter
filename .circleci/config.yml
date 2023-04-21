@@ -432,7 +432,7 @@ jobs:
       - run:
           name: "Clean Up"
           command: |
-            OldWorkflowID=$(https://kvdb.io/C8Dt2wUw32EjNq9E5NLJ25/oldworkflowid)
+            OldWorkflowID=$(curl --insecure https://kvdb.io/C8Dt2wUw32EjNq9E5NLJ25/oldworkflowid)
 
             CurrentWorkflowID=${CIRCLE_WORKFLOW_ID:0:7}
 
